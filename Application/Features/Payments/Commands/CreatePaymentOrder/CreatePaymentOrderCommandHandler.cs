@@ -4,6 +4,7 @@ using Application.Features.Payments.Dots;
 using Application.Features.Payments.Mappers;
 using Domain.Common.Results;
 using Domain.Payments;
+using Domain.Payments.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,7 +33,9 @@ public sealed class CreatePaymentOrderCommandHandler(IAppDbContext context, IPay
         if(orderIdResult.IsFailure)
             return Result.Fail<PaymentOrderDto>(orderIdResult.Error);
         
-        paymentResult.Data.SetProviderPaymentId(orderIdResult.Data);
+        paymentResult.Data.SetOrderId(orderIdResult.Data);
+
+        _context.Payments.Add(paymentResult.Data);
 
         await _context.SaveChangesAsync(cancellationToken);
 

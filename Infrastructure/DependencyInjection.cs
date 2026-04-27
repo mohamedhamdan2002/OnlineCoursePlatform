@@ -44,6 +44,8 @@ public static class DependencyInjection
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAppDbContext, AppDbContext>();
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        services.AddScoped<IPayPalService, PayPalService>();
+        services.AddHttpClient();
         return services;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Common.Results;
-using Domain.Enrollments;
+using Domain.Payments.Enums;
 
 namespace Domain.Payments;
 
@@ -12,7 +12,7 @@ public sealed class Payment : Entity
     public decimal Amount { get; private set; }
     public PaymentStatus Status { get; private set; }
 
-    public string? ProviderPaymentId { get; private set; }
+    public string? OrderId { get; private set; }
     public PaymentProvider Provider { get; private set; }
 
     private Payment() { }
@@ -60,18 +60,18 @@ public sealed class Payment : Entity
         ));
     }
 
-    public Result SetProviderPaymentId(string providerPaymentId)
+    public Result SetOrderId(string orderId)
     {
         if (Status != PaymentStatus.Pending)
             return Result.Fail(PaymentErrors.InvalidStateTransition);
 
-        if (!string.IsNullOrWhiteSpace(ProviderPaymentId))
-            return Result.Fail(PaymentErrors.ProviderPaymentIdAlreadySet);
+        if (!string.IsNullOrWhiteSpace(OrderId))
+            return Result.Fail(PaymentErrors.OrderIdAlreadySet);
 
-        if (string.IsNullOrWhiteSpace(providerPaymentId))
-            return Result.Fail(PaymentErrors.ProviderPaymentIdRequired);
+        if (string.IsNullOrWhiteSpace(orderId))
+            return Result.Fail(PaymentErrors.OrderIdRequired);
 
-        ProviderPaymentId = providerPaymentId;
+        OrderId = orderId;
 
         return Result.Success();
     }
@@ -81,8 +81,8 @@ public sealed class Payment : Entity
         if (Status != PaymentStatus.Processing)
             return Result.Fail(PaymentErrors.InvalidStateTransition);
 
-        if (string.IsNullOrWhiteSpace(ProviderPaymentId))
-            return Result.Fail(PaymentErrors.ProviderPaymentIdRequired);
+        if (string.IsNullOrWhiteSpace(OrderId))
+            return Result.Fail(PaymentErrors.OrderIdRequired);
 
         Status = PaymentStatus.Succeeded;
 
@@ -94,8 +94,8 @@ public sealed class Payment : Entity
         if (Status != PaymentStatus.Pending)
             return Result.Fail(PaymentErrors.InvalidStateTransition);
 
-        if (string.IsNullOrWhiteSpace(ProviderPaymentId))
-            return Result.Fail(PaymentErrors.ProviderPaymentIdRequired);
+        if (string.IsNullOrWhiteSpace(OrderId))
+            return Result.Fail(PaymentErrors.OrderIdRequired);
 
         Status = PaymentStatus.Processing;
 
@@ -111,10 +111,4 @@ public sealed class Payment : Entity
 
         return Result.Success();
     }
-}
-
-public enum PaymentProvider
-{
-    Stripe,
-    PayPal
 }

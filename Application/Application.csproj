@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Auth\Queries\" />
+    <Folder Include="Features\Enrollments\EventHandlers\" />
     <Folder Include="Features\Payments\Queries\" />
   </ItemGroup>
 

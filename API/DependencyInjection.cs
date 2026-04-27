@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Application.Common.Settings;
+using System.Runtime.CompilerServices;
 
 namespace API;
 
@@ -8,6 +9,7 @@ public static class DependencyInjection
     {
 
         services.AddCorsConfig();
+        services.Configure<PayPalSettings>(configuration.GetSection(nameof(PayPalSettings)));
 
         return services;
     }

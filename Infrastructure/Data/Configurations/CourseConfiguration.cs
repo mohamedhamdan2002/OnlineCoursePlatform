@@ -23,5 +23,10 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
 
         builder.Navigation(course => course.Sections)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.HasMany(course => course.Enrollments)
+            .WithOne()
+            .HasForeignKey(enrollment => enrollment.CourseId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

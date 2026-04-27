@@ -9,7 +9,7 @@ public static class PaymentMapper
     {
         return new PaymentOrderDto
         {
-            OrderId = entity.ProviderPaymentId ?? string.Empty,
+            OrderId = entity.OrderId ?? string.Empty,
             Status = entity.Status.ToString(),
             PaymentId = entity.Id
         };

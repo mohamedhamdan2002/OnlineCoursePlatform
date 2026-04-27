@@ -13,7 +13,7 @@ public sealed class CapturePaymentOrderCommandHandler(IAppDbContext context, IPa
 
     public async Task<Result> Handle(CapturePaymentOrderCommand command, CancellationToken cancellationToken)
     {
-        var payment = await _context.Payments.Where(payment => payment.Id == command.PaymentId && payment.ProviderPaymentId == command.OrderId).FirstOrDefaultAsync(cancellationToken);
+        var payment = await _context.Payments.Where(payment => payment.Id == command.PaymentId && payment.OrderId == command.OrderId).FirstOrDefaultAsync(cancellationToken);
         if (payment == null)
             return Result.Fail(ApplicationErrors.InvalidPaymentProcess);
         

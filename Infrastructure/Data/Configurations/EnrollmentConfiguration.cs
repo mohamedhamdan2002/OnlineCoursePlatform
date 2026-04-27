@@ -9,17 +9,17 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
     public void Configure(EntityTypeBuilder<Enrollment> builder)
     {
         builder.HasKey(enrollment => enrollment.Id);
-        builder.HasOne(enrollment => enrollment.Student)
-            .WithMany()
-            .HasForeignKey(enrollment => enrollment.StudentId);
-        builder.HasOne(enrollment => enrollment.Course)
-            .WithMany(course => course.Enrollments)
-            .HasForeignKey(enrollment => enrollment.CourseId).OnDelete(DeleteBehavior.Restrict);
+        //builder.HasOne(enrollment => enrollment.Student)
+        //    .WithMany()
+        //    .HasForeignKey(enrollment => enrollment.StudentId);
+        //builder.HasOne(enrollment => enrollment.Course)
+        //    .WithMany(course => course.Enrollments)
+        //    .HasForeignKey(enrollment => enrollment.CourseId).OnDelete(DeleteBehavior.Restrict);
 
-        builder.Property(enrollment => enrollment.PaymentStatus)
-            .HasConversion(
-                value => value.ToString(),
-                value => (PaymentStatus)Enum.Parse(typeof(PaymentStatus), value)
-            ).HasMaxLength(10);
+        //builder.Property(enrollment => enrollment.PaymentStatus)
+        //    .HasConversion(
+        //        value => value.ToString(),
+        //        value => (PaymentStatus)Enum.Parse(typeof(PaymentStatus), value)
+        //    ).HasMaxLength(10);
     }
 }
