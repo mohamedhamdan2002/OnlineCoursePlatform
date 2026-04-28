@@ -20,7 +20,7 @@ public sealed class ConfirmPaymentCommandHandler(IAppDbContext context) : IReque
             return Result.Fail(ApplicationErrors.InvalidPaymentProcess);
 
         if (payment.Status == PaymentStatus.Succeeded)
-            return Result.Fail(ApplicationErrors.InvalidPaymentProcess); 
+            return Result.Success();
         payment.MarkAsSucceeded();
         // fire event to create enrollment
         payment.AddDomainEvent(new PaymentSucceededEvent { CourseId = payment.CourseId, PaymentId = payment.Id, UserId = payment.UserId });
