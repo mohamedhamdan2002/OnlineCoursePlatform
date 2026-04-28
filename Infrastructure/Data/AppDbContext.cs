@@ -34,9 +34,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IPublisher pub
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        var result = await base.SaveChangesAsync(cancellationToken);
         await PublishDomainEventsAsync(cancellationToken);
-
-        return await  base.SaveChangesAsync(cancellationToken);
+        return result;
     }
 
     private async Task PublishDomainEventsAsync(CancellationToken cancellationToken)
