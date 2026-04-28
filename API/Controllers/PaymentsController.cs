@@ -5,11 +5,13 @@ using Application.Features.Payments.Commands.ConfirmPayment;
 using Application.Features.Payments.Commands.CreatePaymentOrder;
 using Application.Features.Payments.Dots;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace API.Controllers;
 
+//[Authorize]
 public class PaymentsController(ISender sender, IPayPalService payPal) : BaseApiController
 {
     [HttpPost("create")]
@@ -31,10 +33,11 @@ public class PaymentsController(ISender sender, IPayPalService payPal) : BaseApi
     }
 
     [HttpPost("paypal/webhook")]
+    //[AllowAnonymous]
     public async Task<IActionResult> HandleWebHook(CancellationToken cancellationToken)
     {
 
-        await Task.Delay(2000); // for test
+        //await Task.Delay(2000); // for test
         var body = await new StreamReader(Request.Body).ReadToEndAsync();
 
         var isValid = await payPal.VerifyWebhookAsync(Request, body);

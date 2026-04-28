@@ -20,11 +20,11 @@ public sealed class CreateEnrollmentCommandHandler(IAppDbContext context, UserMa
         if (isEnrollmentExist)
             return Result.Fail(ApplicationErrors.AlreadyEnrollmentExist);
 
-        var isUserExist = await _userManager.Users.AllAsync(user => user.Id == command.UserId);
+        var isUserExist = await _userManager.Users.AnyAsync(user => user.Id == command.UserId);
         if (!isUserExist)
             return Result.Fail(ApplicationErrors.UserNotFound);
 
-        var isCourseExist = await _context.Users.AnyAsync(user => user.Id == command.UserId);
+        var isCourseExist = await _context.Courses.AnyAsync(course => course.Id == command.CourseId);
         if(!isCourseExist)
             return Result.Fail(ApplicationErrors.CourseNotFound);
 

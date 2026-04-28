@@ -2,16 +2,19 @@
 using Application.Features.Payments.Commands.ConfirmPayment;
 using Domain.Payments.Events;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Features.Payments.EventHandlers;
 
-public sealed class PaymentSucceededEventHandler(ISender sender) : INotificationHandler<PaymentSucceededEvent>
+public sealed class PaymentSucceededEventHandler(IServiceScopeFactory scopeFactory) : INotificationHandler<PaymentSucceededEvent>
 {
-    private readonly ISender _sender = sender;
+    private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
 
     public async Task Handle(PaymentSucceededEvent notification, CancellationToken cancellationToken)
     {
+        using var scope = _scopeFactory.CreateScope();
+        var sender = scope.ServiceProvider.GetRequiredService<ISender>();
         var command = new CreateEnrollmentCommand(notification.UserId, notification.CourseId, notification.PaymentId);
-        await _sender.Send(command, cancellationToken);
+        await sender.Send(command, cancellationToken);
     }
 }

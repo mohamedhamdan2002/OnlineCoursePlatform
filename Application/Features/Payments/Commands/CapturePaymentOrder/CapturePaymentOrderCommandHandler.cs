@@ -16,7 +16,7 @@ public sealed class CapturePaymentOrderCommandHandler(IAppDbContext context, IPa
         var payment = await _context.Payments.Where(payment => payment.Id == command.PaymentId && payment.OrderId == command.OrderId).FirstOrDefaultAsync(cancellationToken);
         if (payment == null)
             return Result.Fail(ApplicationErrors.InvalidPaymentProcess);
-        
+
         var result = await _payPal.CaptureOrderAsync(command.OrderId);
         if (result.IsFailure)
             return result;
