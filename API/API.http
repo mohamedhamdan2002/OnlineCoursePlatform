@@ -1,6 +1,5 @@
-@API_HostAddress = http://localhost:5250
-
-GET {{API_HostAddress}}/weatherforecast/
-Accept: application/json
-
+@API_HostAddress = http://localhost:5050
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkBzaXRlLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiNDM0ZDkxNTgtYzdhOC00OTcwLTljNGYtMDhkZTdlMWFmODllIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3Nzc0Nzc2ODksImlzcyI6Ik9ubGluZUNvdXJzZVBsYXRmb3JtIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzE5MSJ9.B7hmdOwHxBYWmisAEdcJewkAXHmMxvTaDUFr5B7E8Ak
+GET {{API_HostAddress}}/api/categories/test
+Authorization: Bearer {{token}}
 ###

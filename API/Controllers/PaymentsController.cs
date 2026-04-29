@@ -23,7 +23,7 @@ public class PaymentsController(ISender sender, IPayPalService payPal) : BaseApi
     }
 
     [HttpPost("capture")]
-    public async Task<ActionResult<PaymentOrderDto>> CapturePaymentOrder(CapturePaymentOrderRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> CapturePaymentOrder(CapturePaymentOrderRequest request, CancellationToken cancellationToken)
     {
         var command = new CapturePaymentOrderCommand(request.OrderId, request.PaymentId);
         var result = await sender.Send(command, cancellationToken);

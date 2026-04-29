@@ -47,11 +47,11 @@ builder.Services.AddAuthentication(opt =>
     {
         ValidateAudience = true,
         ValidateIssuer = true,
-        ValidateLifetime = true,
+        ValidateLifetime = false,
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings?.ValidIssuer,
-        ValidAudience = jwtSettings?.ValidIssuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.ValidIssuer!))
+        ValidAudience = jwtSettings?.ValidAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.SecretKey!))
     };
 });
 builder.Services.AddMediatR(options =>
