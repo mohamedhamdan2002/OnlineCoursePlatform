@@ -1,4 +1,6 @@
-﻿using Application.Common.Settings;
+﻿using API.Services;
+using Application.Common.Interfaces;
+using Application.Common.Settings;
 using System.Runtime.CompilerServices;
 
 namespace API;
@@ -10,7 +12,7 @@ public static class DependencyInjection
 
         services.AddCorsConfig();
         services.Configure<PayPalSettings>(configuration.GetSection(nameof(PayPalSettings)));
-
+        services.AddScoped<ICurrentUser, CurrentUser>();
         return services;
     }
     

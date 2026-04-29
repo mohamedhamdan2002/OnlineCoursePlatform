@@ -39,6 +39,7 @@ public class JwtTokenService : IJwtTokenService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Email, user.Email!),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
         var roles = await _userManager.GetRolesAsync(user);
         foreach (var role in roles)
