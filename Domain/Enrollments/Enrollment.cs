@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Common.Results;
+using Domain.Courses;
 namespace Domain.Enrollments;
 public class Enrollment : Entity
 {
@@ -7,7 +8,7 @@ public class Enrollment : Entity
     public Guid CourseId { get; private set; }
     public Guid PaymentId { get; private set; }
     public DateTime EnrolledAt { get; private set; }
-
+    public Course Course { get; private set; }
     private Enrollment() { }
 
     private Enrollment(
