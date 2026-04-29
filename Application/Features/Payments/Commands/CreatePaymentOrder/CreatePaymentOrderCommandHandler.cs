@@ -10,22 +10,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Payments.Commands.CreatePaymentOrder;
 
-public sealed class CreatePaymentOrderCommandHandler(IAppDbContext context, IPayPalService payPal) : IRequestHandler<CreatePaymentOrderCommand, Result<PaymentOrderDto>>
+public sealed class CreatePaymentOrderCommandHandler(IAppDbContext context, IPayPalService payPal, ICurrentUser currentUser) : IRequestHandler<CreatePaymentOrderCommand, Result<PaymentOrderDto>>
 {
     private readonly IAppDbContext _context = context;
     private readonly IPayPalService _payPal = payPal;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<Result<PaymentOrderDto>> Handle(CreatePaymentOrderCommand command, CancellationToken cancellationToken)
     {
+        var userId = _currentUser.UserId;
         var course = await _context.Courses.FindAsync(command.CourseId, cancellationToken);
         if (course == null)
             return Result.Fail<PaymentOrderDto>(ApplicationErrors.CourseNotFound);
         
-        var isAreadyBuyThisCourse = await _context.Enrollments.AnyAsync(e => e.CourseId == command.CourseId && e.StudentId == command.UserId, cancellationToken);
+        var isAreadyBuyThisCourse = await _context.Enrollments.AnyAsync(e => e.CourseId == command.CourseId && e.StudentId == userId, cancellationToken);
         if (isAreadyBuyThisCourse)
             return Result.Fail<PaymentOrderDto>(ApplicationErrors.UserAlreadyEnrolled);
         
-        var paymentResult = Payment.Create(Guid.NewGuid(), command.UserId, command.CourseId, course.Price, PaymentProvider.PayPal);
+        var paymentResult = Payment.Create(Guid.NewGuid(), userId, command.CourseId, course.Price, PaymentProvider.PayPal);
         if (paymentResult.IsFailure)
             return Result.Fail<PaymentOrderDto>(paymentResult.Error);
 
