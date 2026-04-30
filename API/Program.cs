@@ -11,6 +11,7 @@ using Infrastructure.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -53,6 +54,36 @@ builder.Services.AddAuthentication(opt =>
         ValidAudience = jwtSettings?.ValidAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.SecretKey!))
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = async context =>
+        {
+            context.HandleResponse();
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/problem+json";
+            var problem = new ProblemDetails
+            {
+                Type = "https://httpstatuses.com/401",
+                Title = "Unauthorized",
+                Status = 401,
+                Detail = "Your token is missing, expired, or invalid."
+            };
+
+            await context.Response.WriteAsJsonAsync(problem);
+        },
+         OnForbidden = async context =>
+         {
+             context.Response.StatusCode = 403;
+             context.Response.ContentType = "application/problem+json";
+
+             await context.Response.WriteAsJsonAsync(new ProblemDetails
+             {
+                 Status = 403,
+                 Title = "Forbidden",
+                 Detail = "You do not have permission to access this resource."
+             });
+         }
+    };
 });
 builder.Services.AddMediatR(options =>
 {
@@ -71,6 +102,8 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseCors("MyAppPolicy");
+app.UseAuthentication();
+app.UseAuthorization();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
