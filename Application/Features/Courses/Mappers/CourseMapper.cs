@@ -6,7 +6,7 @@ namespace Application.Features.Courses.Mappers;
 
 public static class CourseMapper
 {
-    public static CourseDto ToDto(this Course entity)
+    public static CourseDto ToDto(this Course entity, bool isEnrolled = false)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         return new CourseDto
@@ -17,6 +17,7 @@ public static class CourseMapper
             Level = entity.Level.ToString(),
             Instructor = $"{entity.Instructor.FirstName} {entity.Instructor.LastName}",
             Price = entity.Price,
+            IsEnrolled = isEnrolled,
             Rating = entity.AverageRating,
             ReviewsCount = entity.ReviewsCount,
             StudentsCount = entity.StudentsCount,

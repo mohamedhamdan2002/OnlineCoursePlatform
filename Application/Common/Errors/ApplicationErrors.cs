@@ -17,5 +17,5 @@ public static class ApplicationErrors
     public static Error UserAlreadyEnrolled = new(400, "You try to buy course you already bought it before..");
     public static Error InvalidPaymentProcess = new(400, "Invalid Payment , this payment not exist");
     public static Error AlreadyEnrollmentExist = new(400, "Invalid Enrollment , this Enrollment Already exist");
-
+    public static Error Unauthorized = new(401, "Unauthorized user");
 }

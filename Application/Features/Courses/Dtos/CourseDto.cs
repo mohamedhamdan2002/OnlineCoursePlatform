@@ -10,6 +10,7 @@ public sealed record CourseDto
     public string Instructor { get; init; }
     public string Level { get; init; }
     public decimal Price { get; init; }
+    public bool IsEnrolled { get; init; }
     public CategoryDto Category { get; init; }
     public double Rating { get; init; }
     public int ReviewsCount { get; init; }

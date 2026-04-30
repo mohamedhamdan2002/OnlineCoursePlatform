@@ -18,7 +18,10 @@ public sealed class CreatePaymentOrderCommandHandler(IAppDbContext context, IPay
 
     public async Task<Result<PaymentOrderDto>> Handle(CreatePaymentOrderCommand command, CancellationToken cancellationToken)
     {
+        if (!_currentUser.IsAuthenticated)
+            return Result.Fail<PaymentOrderDto>(ApplicationErrors.Unauthorized);
         var userId = _currentUser.UserId;
+
         var course = await _context.Courses.FindAsync(command.CourseId, cancellationToken);
         if (course == null)
             return Result.Fail<PaymentOrderDto>(ApplicationErrors.CourseNotFound);

@@ -11,8 +11,10 @@ public sealed class CurrentUser(IHttpContextAccessor httpAccessor) : ICurrentUse
         {
             var claim = httpAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if(string.IsNullOrWhiteSpace(claim) || !Guid.TryParse(claim, out var userId))
-                throw new UnauthorizedAccessException("User is not authenticated.");
+                return Guid.Empty;
             return userId;
         }
     }
+
+    public bool IsAuthenticated => UserId != Guid.Empty;
 }
