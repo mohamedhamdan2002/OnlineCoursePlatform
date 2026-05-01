@@ -2,6 +2,7 @@
 using Application.Common.Interfaces;
 using Domain.Common.Results;
 using Domain.Enrollments;
+using Domain.Enrollments.Events;
 using Domain.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -25,17 +26,22 @@ public sealed class CreateEnrollmentCommandHandler(IAppDbContext context, UserMa
             return Result.Fail(ApplicationErrors.UserNotFound);
 
         var isCourseExist = await _context.Courses.AnyAsync(course => course.Id == command.CourseId);
-        if(!isCourseExist)
+        if (!isCourseExist)
             return Result.Fail(ApplicationErrors.CourseNotFound);
 
         var enrollmentResult = Enrollment.Create(Guid.NewGuid(), command.UserId, command.CourseId, command.PaymentId);
         if (enrollmentResult.IsFailure)
             return Result.Fail(enrollmentResult.Error);
-       
-        _context.Enrollments.Add(enrollmentResult.Data);
-        await _context.SaveChangesAsync(cancellationToken);
-        // here notify user
 
+        _context.Enrollments.Add(enrollmentResult.Data);
+        enrollmentResult.Data.AddDomainEvent(new EnrollmentCreatedEvent
+        {
+            Course = enrollmentResult.Data.Course,
+            EnrolledAt = enrollmentResult.Data.EnrolledAt,
+            EnrollmentId = enrollmentResult.Data.Id,
+            UserId = command.UserId,
+        });
+        await _context.SaveChangesAsync(cancellationToken);
         return Result.Success();
         
     }
