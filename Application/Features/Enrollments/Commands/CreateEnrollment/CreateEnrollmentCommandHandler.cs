@@ -36,7 +36,7 @@ public sealed class CreateEnrollmentCommandHandler(IAppDbContext context, UserMa
         _context.Enrollments.Add(enrollmentResult.Data);
         enrollmentResult.Data.AddDomainEvent(new EnrollmentCreatedEvent
         {
-            Course = enrollmentResult.Data.Course,
+            CourseId = enrollmentResult.Data.CourseId,
             EnrolledAt = enrollmentResult.Data.EnrolledAt,
             EnrollmentId = enrollmentResult.Data.Id,
             UserId = command.UserId,

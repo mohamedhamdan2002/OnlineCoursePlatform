@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddCorsConfig();
         services.Configure<PayPalSettings>(configuration.GetSection(nameof(PayPalSettings)));
         services.AddScoped<ICurrentUser, CurrentUser>();
+        services.AddSignalR();
         return services;
     }
     
@@ -24,7 +25,8 @@ public static class DependencyInjection
             {
                 policy.WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();    
             });
         });
     }
