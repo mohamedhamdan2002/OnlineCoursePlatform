@@ -3,9 +3,9 @@ using Application.Features.Enrollments.Dtos;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Infrastructure.RealTime;
-public sealed class SignalRNotificationService(IHubContext<NotificationHub> hubContext) : INotificationService
+public sealed class SignalREnrollmentNotifier(IHubContext<EnrollmentHub> hubContext) : IEnrollmentNotifier
 {
-    private readonly IHubContext<NotificationHub> _hubContext = hubContext;
+    private readonly IHubContext<EnrollmentHub> _hubContext = hubContext;
 
     public async Task SendEnrollmentCreatedAsync(Guid userId, EnrollmentDto enrollment, CancellationToken cancellationToken)
     {

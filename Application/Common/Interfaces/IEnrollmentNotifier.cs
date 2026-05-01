@@ -2,7 +2,7 @@
 
 namespace Application.Common.Interfaces;
 
-public interface INotificationService
+public interface IEnrollmentNotifier
 {
     Task SendEnrollmentCreatedAsync(Guid userId, EnrollmentDto enrollment, CancellationToken cancellationToken);
 }

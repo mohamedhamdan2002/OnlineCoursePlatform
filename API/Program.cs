@@ -6,6 +6,7 @@ using Application.Common.Settings;
 using Domain.Identity;
 using Infrastructure;
 using Infrastructure.Data;
+using Infrastructure.RealTime;
 using Infrastructure.Services;
 using Infrastructure.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -120,4 +121,5 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.MapControllers();
+app.MapHub<EnrollmentHub>(EnrollmentHub.HubUrl);
 app.Run();

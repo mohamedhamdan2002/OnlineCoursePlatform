@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Identity;
 using Infrastructure.Data;
+using Infrastructure.RealTime;
 using Infrastructure.Services;
 //using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,7 @@ public static class DependencyInjection
         services.AddScoped<IAppDbContext, AppDbContext>();
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
         services.AddScoped<IPayPalService, PayPalService>();
+        services.AddScoped<IEnrollmentNotifier, SignalREnrollmentNotifier>();
         services.AddHttpClient();
         return services;
     }
