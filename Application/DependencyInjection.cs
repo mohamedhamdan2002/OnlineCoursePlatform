@@ -1,14 +1,24 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Application.Common.Behaviors;
+using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
 
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+        services.AddMediatR(options =>
+        {
+            options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            options.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            options.AddOpenBehavior(typeof(CachingBehavior<,>));
+        });
         return services;
     }
 }

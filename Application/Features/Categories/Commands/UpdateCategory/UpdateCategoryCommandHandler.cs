@@ -2,12 +2,14 @@
 using Application.Common.Interfaces;
 using Domain.Common.Results;
 using MediatR;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Features.Categories.Commands.UpdateCategory;
 
-public sealed class UpdateCategoryCommandHandler(IAppDbContext context) : IRequestHandler<UpdateCategoryCommand, Result>
+public sealed class UpdateCategoryCommandHandler(IAppDbContext context, HybridCache cache) : IRequestHandler<UpdateCategoryCommand, Result>
 {
     private readonly IAppDbContext _context = context;
+    private readonly HybridCache _cache = cache;
 
     public async Task<Result> Handle(UpdateCategoryCommand command, CancellationToken cancellationToken)
     {
@@ -24,6 +26,7 @@ public sealed class UpdateCategoryCommandHandler(IAppDbContext context) : IReque
         }
 
         await _context.SaveChangesAsync(cancellationToken);
+        await _cache.RemoveByTagAsync("category", cancellationToken);
         return Result.Success();
     }
 }

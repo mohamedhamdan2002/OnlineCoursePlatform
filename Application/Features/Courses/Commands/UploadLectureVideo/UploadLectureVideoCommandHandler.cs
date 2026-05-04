@@ -2,13 +2,15 @@
 using Application.Common.Interfaces;
 using Domain.Common.Results;
 using MediatR;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Features.Courses.Commands.UploadLectureVideo;
 
-public sealed class UploadLectureVideoCommandHandler(IAppDbContext context, IFileStorageService fileStorage) : IRequestHandler<UploadLectureVideoCommand, Result>
+public sealed class UploadLectureVideoCommandHandler(IAppDbContext context, IFileStorageService fileStorage, HybridCache cache) : IRequestHandler<UploadLectureVideoCommand, Result>
 {
     private readonly IAppDbContext _context = context;
     private readonly IFileStorageService _fileStorage = fileStorage;
+    private readonly HybridCache _cache = cache;
 
     public async Task<Result> Handle(
         UploadLectureVideoCommand command, 
@@ -26,6 +28,7 @@ public sealed class UploadLectureVideoCommandHandler(IAppDbContext context, IFil
             return updateVideoUrlResult;
         }
         await _context.SaveChangesAsync(cancellationToken);
+        await _cache.RemoveByTagAsync("course");
         return Result.Success();
         
     }

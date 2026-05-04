@@ -5,13 +5,15 @@ using Application.Features.Courses.Mappers;
 using Domain.Common.Results;
 using Domain.Courses;
 using MediatR;
-
+using Microsoft.Extensions.Caching.Hybrid;
 namespace Application.Features.Courses.Commands.CreateCourse;
 
-public sealed class CreateCourseCommandHandler(IAppDbContext context, IFileStorageService fileStorage) : IRequestHandler<CreateCourseCommand, Result<CourseDto>>
+
+public sealed class CreateCourseCommandHandler(IAppDbContext context, IFileStorageService fileStorage, HybridCache cache) : IRequestHandler<CreateCourseCommand, Result<CourseDto>>
 {
     private readonly IAppDbContext _context = context;
     private readonly IFileStorageService _fileStorage = fileStorage;
+    private readonly HybridCache _cache = cache;
 
     public async Task<Result<CourseDto>> Handle(CreateCourseCommand command, CancellationToken cancellationToken)
     {
@@ -37,6 +39,7 @@ public sealed class CreateCourseCommandHandler(IAppDbContext context, IFileStora
         }
         _context.Courses.Add(courseResult.Data);
         await _context.SaveChangesAsync(cancellationToken);
+        await _cache.RemoveByTagAsync("course"); 
         return Result.Success(courseResult.Data.ToDto());
 
     }

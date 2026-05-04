@@ -5,12 +5,14 @@ using Application.Features.Courses.Mappers;
 using Domain.Common.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Features.Courses.Commands.CreateLecture;
 
-public class CreateLectureCommandHandler(IAppDbContext context) : IRequestHandler<CreateLectureCommand, Result<LectureDto>>
+public class CreateLectureCommandHandler(IAppDbContext context, HybridCache cache) : IRequestHandler<CreateLectureCommand, Result<LectureDto>>
 {
     private readonly IAppDbContext _context = context;
+    private readonly HybridCache _cache = cache;
 
     public async Task<Result<LectureDto>> Handle(CreateLectureCommand command, CancellationToken cancellationToken)
     {
@@ -34,7 +36,7 @@ public class CreateLectureCommandHandler(IAppDbContext context) : IRequestHandle
         }
 
         await _context.SaveChangesAsync(cancellationToken);
-
+        await _cache.RemoveByTagAsync("course");
         return Result.Success(result.Data.ToDto());
     }
 }

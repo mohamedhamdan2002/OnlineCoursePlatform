@@ -5,12 +5,14 @@ using Application.Features.Courses.Mappers;
 using Domain.Common.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Features.Courses.Commands.CreateSection;
 
-public sealed class CreateSectionCommandHandler(IAppDbContext context) : IRequestHandler<CreateSectionCommand, Result<SectionDto>>
+public sealed class CreateSectionCommandHandler(IAppDbContext context, HybridCache cache) : IRequestHandler<CreateSectionCommand, Result<SectionDto>>
 {
     private readonly IAppDbContext _context = context;
+    private readonly HybridCache _cache = cache;
 
     public async Task<Result<SectionDto>> Handle(CreateSectionCommand command, CancellationToken cancellationToken)
     {
@@ -34,6 +36,7 @@ public sealed class CreateSectionCommandHandler(IAppDbContext context) : IReques
         }
 
         await _context.SaveChangesAsync(cancellationToken);
+        await _cache.RemoveByTagAsync("course");
         var sectionDto = result.Data.ToDto();
         return Result.Success(sectionDto);
     }

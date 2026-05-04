@@ -1,4 +1,5 @@
-﻿using Application.Common.Utilities;
+﻿using Application.Common.Interfaces;
+using Application.Common.Utilities;
 using Application.Features.Courses.Dtos;
 using Domain.Common.Results;
 using MediatR;
@@ -9,4 +10,11 @@ public sealed record GetAllCoursesQuery(
     int PageNumber,
     int PageSize,
     GuidCollection? CategoriesIds = null
-) : IRequest<Result<PageList<CourseDto>>>;
+) : ICacheRequest<Result<PageList<CourseDto>>>
+{
+    public string CacheKey => $"courses_pageNumber={PageNumber}&pageSize={PageSize}&categoriesIds={string.Join(',', CategoriesIds?.Values ?? [])}";
+
+    public string[] Tags => ["course"];
+
+    public TimeSpan Expiration => TimeSpan.FromMinutes(10);
+}

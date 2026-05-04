@@ -2,13 +2,14 @@
 using Application.Common.Interfaces;
 using Domain.Common.Results;
 using MediatR;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Application.Features.Categories.Commands.DeleteCategory;
 
-public sealed class DeleteCategoryCommandHandler(IAppDbContext context) : IRequestHandler<DeleteCategoryCommand, Result>
+public sealed class DeleteCategoryCommandHandler(IAppDbContext context, HybridCache cache) : IRequestHandler<DeleteCategoryCommand, Result>
 {
     private readonly IAppDbContext _context = context;
+    private readonly HybridCache _cache = cache;
     public async Task<Result> Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
     {
         var category = await _context.Categories.FindAsync(command.Id, cancellationToken);
@@ -19,7 +20,7 @@ public sealed class DeleteCategoryCommandHandler(IAppDbContext context) : IReque
 
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync(cancellationToken);
-
+        await _cache.RemoveByTagAsync("category", cancellationToken);
         return Result.Success();
     }
 }

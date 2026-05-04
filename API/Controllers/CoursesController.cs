@@ -9,12 +9,14 @@ using Application.Features.Courses.Queries.GetAllCourses;
 using Application.Features.Courses.Queries.GetCourseById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace API.Controllers;
 
 public class CoursesController(ISender sender) : BaseApiController
 {
     [HttpGet]
+    [OutputCache(Duration = 60, VaryByQueryKeys = ["pageNumber", "pageSize", "categoriesIds"])]
     public async Task<ActionResult<PageList<CourseDto>>> GetAllCourses([FromQuery] CourseFiltersRequest courseFiltersRequest ,[FromQuery] CoursePageRequest request, CancellationToken cancellationToken)
     {
         if (request.PageNumber <= 0)
@@ -37,6 +39,7 @@ public class CoursesController(ISender sender) : BaseApiController
     }
 
     [HttpGet("{id:guid}")]
+    [OutputCache(VaryByRouteValueNames = ["id"])]
     public async Task<ActionResult<CourseDto>> GetCourseById(Guid id, CancellationToken cancellationToken)
     {
         var query = new GetCourseByIdQuery(id);

@@ -5,6 +5,7 @@ using Infrastructure.RealTime;
 using Infrastructure.Services;
 //using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 //using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,6 +43,11 @@ public static class DependencyInjection
         //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.ValidIssuer!))
         //    };
         //});
+        services.AddHybridCache(options => options.DefaultEntryOptions = new HybridCacheEntryOptions
+        {
+            Expiration = TimeSpan.FromMinutes(10), // L2, L3
+            LocalCacheExpiration = TimeSpan.FromSeconds(30), // L1
+        });
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAppDbContext, AppDbContext>();
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
