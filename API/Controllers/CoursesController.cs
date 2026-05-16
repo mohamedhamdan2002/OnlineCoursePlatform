@@ -1,4 +1,5 @@
 ﻿using API.Requests.Courses;
+using Application.Common.Interfaces;
 using Application.Common.Utilities;
 using Application.Features.Courses.Commands.CreateCourse;
 using Application.Features.Courses.Commands.CreateLecture;
@@ -13,10 +14,10 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace API.Controllers;
 
-public class CoursesController(ISender sender) : BaseApiController
+public class CoursesController(ISender sender, ICurrentUser currentUser) : BaseApiController
 {
     [HttpGet]
-    [OutputCache(Duration = 60, VaryByQueryKeys = ["pageNumber", "pageSize", "categoriesIds"])]
+    [OutputCache(PolicyName = "CoursePolicy", VaryByQueryKeys = ["pageNumber", "pageSize", "categoriesIds"])]
     public async Task<ActionResult<PageList<CourseDto>>> GetAllCourses([FromQuery] CourseFiltersRequest courseFiltersRequest ,[FromQuery] CoursePageRequest request, CancellationToken cancellationToken)
     {
         if (request.PageNumber <= 0)
@@ -33,16 +34,16 @@ public class CoursesController(ISender sender) : BaseApiController
         {
             return BadRequest("CategoriesIds should be comma separated value like '0000-0000-0000-0000,0000-0000-0000-0000,0000-0000-0000-0000'");
         }
-        var query = new GetAllCoursesQuery(request.PageNumber, request.PageSize, categoriesIds);
+        var query = new GetAllCoursesQuery(request.PageNumber, request.PageSize, currentUser.UserId, categoriesIds);
         var result = await sender.Send(query, cancellationToken);
         return HandleResult(result, () => Ok(result.Data));
     }
 
     [HttpGet("{id:guid}")]
-    [OutputCache(VaryByRouteValueNames = ["id"])]
+    [OutputCache(PolicyName = "CoursesPolicy", VaryByRouteValueNames = ["id"])]
     public async Task<ActionResult<CourseDto>> GetCourseById(Guid id, CancellationToken cancellationToken)
     {
-        var query = new GetCourseByIdQuery(id);
+        var query = new GetCourseByIdQuery(id, currentUser.UserId);
         var result = await sender.Send(query, cancellationToken);
         return HandleResult(result, () => Ok(result.Data));
     }

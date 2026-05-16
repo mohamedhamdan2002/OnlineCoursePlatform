@@ -9,10 +9,11 @@ namespace Application.Features.Courses.Queries.GetAllCourses;
 public sealed record GetAllCoursesQuery(
     int PageNumber,
     int PageSize,
+    Guid UserId,
     GuidCollection? CategoriesIds = null
 ) : ICacheRequest<Result<PageList<CourseDto>>>
 {
-    public string CacheKey => $"courses_pageNumber={PageNumber}&pageSize={PageSize}&categoriesIds={string.Join(',', CategoriesIds?.Values ?? [])}";
+    public string CacheKey => $"courses_userId={UserId.ToString()}_pageNumber={PageNumber}&pageSize={PageSize}&categoriesIds={string.Join(',', CategoriesIds?.Values ?? [])}";
 
     public string[] Tags => ["course"];
 

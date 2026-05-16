@@ -10,16 +10,14 @@ using System.Data;
 
 namespace Application.Features.Courses.Queries.GetAllCourses;
 
-public sealed class GetAllCoursesQueryHandler(IAppDbContext context, ICurrentUser currentUser) : IRequestHandler<GetAllCoursesQuery, Result<PageList<CourseDto>>>
+public sealed class GetAllCoursesQueryHandler(IAppDbContext context) : IRequestHandler<GetAllCoursesQuery, Result<PageList<CourseDto>>>
 {
     private readonly IAppDbContext _context = context;
-    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<Result<PageList<CourseDto>>> Handle(GetAllCoursesQuery query, CancellationToken cancellationToken)
     {
-        var userId = _currentUser.UserId;
-        var enrolledCourseIds = _currentUser.IsAuthenticated ? new HashSet<Guid>(await
-            _context.Enrollments.Where(enrollment => enrollment.StudentId == userId).Select(enrollment => enrollment.CourseId).ToListAsync()) 
+        var enrolledCourseIds = query.UserId != Guid.Empty ? new HashSet<Guid>(await
+            _context.Enrollments.Where(enrollment => enrollment.StudentId == query.UserId).Select(enrollment => enrollment.CourseId).ToListAsync()) 
             : new HashSet<Guid>();
         
         var coursesQuery = _context.Courses.AsNoTracking()

@@ -1,4 +1,5 @@
-﻿using API.Services;
+﻿using API.OutputCache;
+using API.Services;
 using Application.Common.Interfaces;
 using Application.Common.Settings;
 using System.Text.Json.Serialization;
@@ -42,6 +43,10 @@ public static class DependencyInjection
             {
                 policy.Expire(TimeSpan.FromSeconds(60));
             });
+
+            options.AddPolicy("CoursesPolicy", policy =>
+                policy.AddPolicy<CoursesOutputCachePolicy>()   
+           );
         });
 
         return services;

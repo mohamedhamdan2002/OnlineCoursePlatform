@@ -24,6 +24,11 @@ public sealed class GetCourseByIdQueryHandler(IAppDbContext context) : IRequestH
         {
             return Result.Fail<CourseDto>(ApplicationErrors.CourseNotFound);
         }
-        return Result.Success(course.ToDto());
+        var isEnrolled = false;
+        if(query.UserId != Guid.Empty)
+        {
+            isEnrolled = await _context.Enrollments.Where(e => e.CourseId ==  query.CourseId && e.StudentId == query.UserId).AnyAsync();
+        }
+        return Result.Success(course.ToDto(isEnrolled));
     }
 }
