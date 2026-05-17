@@ -20,6 +20,7 @@ public sealed class GetCourseByIdQueryHandler(IAppDbContext context) : IRequestH
                                             .Include(course => course.Sections)
                                             .ThenInclude(section => section.Lectures)
                                             .FirstOrDefaultAsync(course => course.Id == query.CourseId, cancellationToken);
+        var studentsCount = await _context.Enrollments.AsNoTracking().Where(e => e.CourseId == query.CourseId).CountAsync();
         if (course is null)
         {
             return Result.Fail<CourseDto>(ApplicationErrors.CourseNotFound);
@@ -29,6 +30,6 @@ public sealed class GetCourseByIdQueryHandler(IAppDbContext context) : IRequestH
         {
             isEnrolled = await _context.Enrollments.Where(e => e.CourseId ==  query.CourseId && e.StudentId == query.UserId).AnyAsync();
         }
-        return Result.Success(course.ToDto(isEnrolled));
+        return Result.Success(course.ToDto(isEnrolled, studentsCount));
     }
 }
