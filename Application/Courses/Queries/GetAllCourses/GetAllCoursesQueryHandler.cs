@@ -24,6 +24,7 @@ public sealed class GetAllCoursesQueryHandler(IAppDbContext context) : IRequestH
         var coursesQuery = _context.Courses.AsNoTracking()
                                             .Include(course => course.Category)
                                             .Include(course => course.Instructor)
+                                            .Include(course => course.Enrollments)
                                             .AsQueryable();
 
         if(query.CategoriesIds is not null)
@@ -60,7 +61,7 @@ public sealed class GetAllCoursesQueryHandler(IAppDbContext context) : IRequestH
                                                 IsEnrolled = enrolledCourseIds.Contains(course.Id),
                                                 Rating = course.AverageRating,
                                                 ReviewsCount = course.ReviewsCount,
-                                                StudentsCount = course.StudentsCount,
+                                                StudentsCount = course.Enrollments.Count,
                                                 Category = course.Category.ToDto(),
                                                 Sections = course.Sections.ToListOfDto()
                                             })
