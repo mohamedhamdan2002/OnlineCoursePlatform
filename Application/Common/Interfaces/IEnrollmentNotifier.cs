@@ -1,4 +1,4 @@
-﻿using Application.Features.Enrollments.Dtos;
+﻿using Application.Enrollments.Dtos;
 
 namespace Application.Common.Interfaces;
 

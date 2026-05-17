@@ -1,9 +1,9 @@
 ﻿using API.Requests.Payments;
 using Application.Common.Interfaces;
-using Application.Features.Payments.Commands.CapturePaymentOrder;
-using Application.Features.Payments.Commands.ConfirmPayment;
-using Application.Features.Payments.Commands.CreatePaymentOrder;
-using Application.Features.Payments.Dots;
+using Application.Payments.Commands.CapturePaymentOrder;
+using Application.Payments.Commands.ConfirmPayment;
+using Application.Payments.Commands.CreatePaymentOrder;
+using Application.Payments.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

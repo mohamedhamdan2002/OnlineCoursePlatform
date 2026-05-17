@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interfaces;
-using Application.Features.Enrollments.Dtos;
+using Application.Enrollments.Dtos;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Infrastructure.RealTime;

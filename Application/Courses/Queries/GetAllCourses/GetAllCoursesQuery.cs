@@ -1,0 +1,22 @@
+﻿using Application.Common.Interfaces;
+using Application.Common.Utilities;
+using Application.Courses.Dtos;
+using Domain.Common.Results;
+using MediatR;
+
+namespace Application.Courses.Queries.GetAllCourses;
+
+public sealed record GetAllCoursesQuery(
+    int PageNumber,
+    int PageSize,
+    Guid UserId,
+    GuidCollection? CategoriesIds = null,
+    Collection<string>? Levels = null
+) : ICacheRequest<Result<PageList<CourseDto>>>
+{
+    public string CacheKey => $"courses_userId={UserId.ToString()}_pageNumber={PageNumber}&pageSize={PageSize}&categoriesIds={string.Join(',', CategoriesIds?.Values ?? [])}&levels={string.Join(',', Levels?.Values ?? [])}";
+
+    public string[] Tags => ["course"];
+
+    public TimeSpan Expiration => TimeSpan.FromMinutes(10);
+}

@@ -1,7 +1,7 @@
 ﻿using API.Filters;
 using Application.Auth.Commands.LoginUser;
 using Application.Auth.Commands.RegisterUser;
-using Application.Dtos.User;
+using Application.Auth.Dtos.User;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

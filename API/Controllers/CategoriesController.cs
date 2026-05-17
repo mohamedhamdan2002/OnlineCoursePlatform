@@ -1,9 +1,9 @@
 ﻿using API.Requests.Categories;
-using Application.Features.Categories.Commands.CreateCategory;
-using Application.Features.Categories.Commands.DeleteCategory;
-using Application.Features.Categories.Commands.UpdateCategory;
-using Application.Features.Categories.Dots;
-using Application.Features.Categories.Queries.GetAllCategories;
+using Application.Categories.Dtos;
+using Application.Categories.Commands.CreateCategory;
+using Application.Categories.Commands.DeleteCategory;
+using Application.Categories.Commands.UpdateCategory;
+using Application.Categories.Queries.GetAllCategories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

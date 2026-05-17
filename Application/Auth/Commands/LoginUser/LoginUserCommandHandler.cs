@@ -1,5 +1,5 @@
-﻿using Application.Common.Interfaces;
-using Application.Dtos.User;
+﻿using Application.Auth.Dtos.User;
+using Application.Common.Interfaces;
 using Domain.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;

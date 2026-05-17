@@ -6,6 +6,7 @@ public sealed record CourseFiltersRequest
 {
     
     public string? CategoriesIds { get; set; }
+    public string? Levels { get; set; }
 
 }
 

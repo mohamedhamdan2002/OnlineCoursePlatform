@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Application.Common.Utilities;
 
@@ -37,6 +35,44 @@ public class GuidCollection : IParsable<GuidCollection>
         }
 
         result = new GuidCollection
+        {
+            Values = values
+        };
+
+        return true;
+    }
+}
+
+public class Collection<T> : IParsable<Collection<T>> where T : IParsable<T>
+{
+    public IEnumerable<T> Values { get; init; } = Enumerable.Empty<T>();
+    public static Collection<T> Parse(string value, IFormatProvider? provider)
+    {
+        if (!TryParse(value, provider, out var result))
+        {
+            throw new ArgumentException("Could not parse this value", nameof(value));
+        }
+        return result;
+    }
+
+    public static bool TryParse([NotNullWhen(true)] string? str, IFormatProvider? provider, [MaybeNullWhen(false)] out Collection<T> result)
+    {
+        var segments = str?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (segments is null || !segments.Any())
+        {
+            result = null;
+            return false;
+        }
+        var values = new List<T>();
+        foreach (var segment in segments)
+        {
+            
+            if (T.TryParse(segment, provider, out var value))
+            {
+                values.Add(value);
+            }
+        }
+        result = new Collection<T>
         {
             Values = values
         };

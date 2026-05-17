@@ -1,4 +1,4 @@
-﻿using Application.Dtos.User;
+﻿using Application.Auth.Dtos.User;
 using MediatR;
 
 namespace Application.Auth.Commands.LoginUser;

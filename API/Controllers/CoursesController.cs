@@ -1,13 +1,13 @@
 ﻿using API.Requests.Courses;
 using Application.Common.Interfaces;
 using Application.Common.Utilities;
-using Application.Features.Courses.Commands.CreateCourse;
-using Application.Features.Courses.Commands.CreateLecture;
-using Application.Features.Courses.Commands.CreateSection;
-using Application.Features.Courses.Commands.UploadLectureVideo;
-using Application.Features.Courses.Dtos;
-using Application.Features.Courses.Queries.GetAllCourses;
-using Application.Features.Courses.Queries.GetCourseById;
+using Application.Courses.Dtos;
+using Application.Courses.Commands.CreateCourse;
+using Application.Courses.Commands.CreateLecture;
+using Application.Courses.Commands.CreateSection;
+using Application.Courses.Commands.UploadLectureVideo;
+using Application.Courses.Queries.GetAllCourses;
+using Application.Courses.Queries.GetCourseById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -17,7 +17,7 @@ namespace API.Controllers;
 public class CoursesController(ISender sender, ICurrentUser currentUser) : BaseApiController
 {
     [HttpGet]
-    [OutputCache(PolicyName = "CoursePolicy", VaryByQueryKeys = ["pageNumber", "pageSize", "categoriesIds"])]
+    [OutputCache(PolicyName = "CoursePolicy", VaryByQueryKeys = ["pageNumber", "pageSize", "categoriesIds", "levels"])]
     public async Task<ActionResult<PageList<CourseDto>>> GetAllCourses([FromQuery] CourseFiltersRequest courseFiltersRequest ,[FromQuery] CoursePageRequest request, CancellationToken cancellationToken)
     {
         if (request.PageNumber <= 0)
@@ -34,7 +34,12 @@ public class CoursesController(ISender sender, ICurrentUser currentUser) : BaseA
         {
             return BadRequest("CategoriesIds should be comma separated value like '0000-0000-0000-0000,0000-0000-0000-0000,0000-0000-0000-0000'");
         }
-        var query = new GetAllCoursesQuery(request.PageNumber, request.PageSize, currentUser.UserId, categoriesIds);
+        Collection<string>? levels = null;
+        if (courseFiltersRequest.Levels is not null && !Collection<string>.TryParse(courseFiltersRequest.Levels, null, out levels))
+        {
+            return BadRequest("Level should be comma separated value like 'beginner,advanced'");
+        }
+        var query = new GetAllCoursesQuery(request.PageNumber, request.PageSize, currentUser.UserId, categoriesIds, levels);
         var result = await sender.Send(query, cancellationToken);
         return HandleResult(result, () => Ok(result.Data));
     }

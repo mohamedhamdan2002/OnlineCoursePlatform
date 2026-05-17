@@ -1,5 +1,5 @@
-﻿using Application.Features.Enrollments.Dtos;
-using Application.Features.Enrollments.Queries.GetMyEnrollments;
+﻿using Application.Enrollments.Dtos;
+using Application.Enrollments.Queries.GetMyEnrollments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
