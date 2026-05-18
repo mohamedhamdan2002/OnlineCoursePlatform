@@ -5,6 +5,7 @@ using Domain.Courses.Sections;
 using Domain.Enrollments;
 using Domain.Identity;
 using Domain.Payments;
+using Domain.Reviews;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -19,7 +20,7 @@ public interface IAppDbContext
     DbSet<Lecture> Lectures { get; }
     DbSet<Payment> Payments { get; }
     DbSet<Enrollment> Enrollments { get; }
-
+    DbSet<Review> Reviews { get; }
 
 
     ChangeTracker ChangeTracker { get; }

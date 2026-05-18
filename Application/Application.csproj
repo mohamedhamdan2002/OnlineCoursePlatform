@@ -13,8 +13,6 @@
   <ItemGroup>
     <Folder Include="Auth\Queries\" />
     <Folder Include="Payments\Queries\" />
-    <Folder Include="Reviews\Commands\" />
-    <Folder Include="Reviews\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
